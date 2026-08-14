@@ -29,27 +29,3 @@ HTML5
 CSS3 (com Flexbox/Grid)
 
 JavaScript (Vanilla ou com bibliotecas)
-
-[opcional] Leaflet / Google Maps API para mapeamento
-
-[opcional] LocalStorage / JSON para persistência de dados
-
-📦 Como Executar o Projeto
-Clone este repositório:
-
-bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
-Navegue até a pasta do projeto:
-
-bash
-cd nome-do-projeto
-Abra o arquivo index.html no seu navegador.
-
-💡 Dica: Para melhor experiência, utilize uma extensão como Live Server no VS Code.
-
-📌 Melhorias Futuras
-□ Integração com banco de dados (MySQL/PostgreSQL)
-□ Autenticação de usuários (login)
-□ Exportação de relatórios (PDF/Excel)
-□ Notificações em tempo real
-□ Modo escuro
