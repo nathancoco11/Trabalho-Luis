@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YvoneClass - Ocorrências</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== TODOS OS ESTILOS IGUAIS A INDEX ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e1a;
+            color: #e0f7ff;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .navbar-brand .logo-icon {
+            font-size: 1.8em;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            animation: pulseNeon 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseNeon {
+            0% { text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6); }
+            100% { text-shadow: 0 0 20px rgba(0, 255, 255, 1), 0 0 40px rgba(0, 255, 255, 0.8), 0 0 80px rgba(0, 255, 255, 0.4); }
+        }
+
+        .navbar-brand h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .navbar-brand small {
+            font-size: 0.5em;
+            color: #80ffff;
+            -webkit-text-fill-color: #80ffff;
+            opacity: 0.7;
+            letter-spacing: 3px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            background: transparent;
+            color: #80ffff;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-left: 15px;
+            border-left: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .user-avatar-nav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #0a0e1a;
+            cursor: pointer;
+        }
+
+        .user-email-nav {
+            font-size: 0.85em;
+            color: #80ffff;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-logout-nav {
+            padding: 6px 16px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 30px;
+            background: transparent;
+            color: #ff6666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+        }
+
+        .btn-logout-nav:hover {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.2);
+        }
+
+        .btn-login-nav {
+            padding: 8px 22px;
+            border: 1px solid #00ffff;
+            border-radius: 30px;
+            background: rgba(0, 255, 255, 0.05);
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .btn-login-nav:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .show-when-logged-in {
+            display: none !important;
+        }
+
+        body.logged-in .show-when-logged-in {
+            display: flex !important;
+        }
+
+        body.logged-in .hide-when-logged-in {
+            display: none !important;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: rgba(0, 20, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+        }
+
+        .card h2 {
+            color: #00ffff;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .card p {
+            font-size: 1.05em;
+            line-height: 1.8;
+            color: #b0e0ff;
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        /* ===== BOTÕES ===== */
+        .btn-submit {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            color: #0a0e1a;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn-positive {
+            background: linear-gradient(135deg, #00ff64, #00cc50);
+        }
+
+        .btn-negative {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+        }
+
+        /* ===== LISTA DE OCORRÊNCIAS ===== */
+        .ocorrencia-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .ocorrencia-item:hover {
+            background: rgba(0, 255, 255, 0.02);
+        }
+
+        .ocorrencia-item .tipo {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .tipo-positive {
+            background: rgba(0, 255, 100, 0.2);
+            color: #00ff64;
+            border: 1px solid rgba(0, 255, 100, 0.3);
+        }
+
+        .tipo-negative {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+
+        /* ===== TELA DE BLOQUEIO ===== */
+        .blocked-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 30, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .blocked-overlay.active {
+            display: flex;
+        }
+
+        .blocked-overlay .icon-lock {
+            font-size: 4em;
+            color: #00ffff;
+            margin-bottom: 30px;
+            animation: pulseNeon 2s ease-in-out infinite alternate;
+        }
+
+        .blocked-overlay h2 {
+            color: #00ffff;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .blocked-overlay p {
+            color: #b0e0ff;
+            font-size: 1.1em;
+            text-align: center;
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        .blocked-overlay .btn-back {
+            padding: 15px 40px;
+            border: 2px solid #00ffff;
+            border-radius: 50px;
+            background: rgba(0, 255, 255, 0.05);
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .blocked-overlay .btn-back:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 992px) {
+            .navbar {
+                height: auto;
+                padding: 10px 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .nav-menu {
+                gap: 5px;
+                width: 100%;
+                justify-content: center;
+                order: 3;
+                padding-top: 10px;
+                border-top: 1px solid rgba(0, 255, 255, 0.05);
+            }
+
+            .nav-item {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            .nav-user {
+                border-left: none;
+                padding-left: 0;
+            }
+
+            body {
+                padding-top: 120px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar-brand h1 {
+                font-size: 1.2em;
+            }
+
+            .navbar-brand .logo-icon {
+                font-size: 1.4em;
+            }
+
+            .nav-item {
+                font-size: 0.7em;
+                padding: 4px 10px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== TELA DE BLOQUEIO ===== -->
+    <div class="blocked-overlay" id="blockedOverlay">
+        <div class="icon-lock">🔒</div>
+        <h2>Acesso Restrito</h2>
+        <p>
+            Esta página é exclusiva para <span style="color: #00ffff; font-weight: 600;">professores</span>.
+            Faça login para acessar o sistema de ocorrências.
+        </p>
+        <a href="index.html" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Voltar para o Início
+        </a>
+    </div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <span class="logo-icon">✦</span>
+            <div>
+                <h1>YvoneClass <small>EDU</small></h1>
+            </div>
+        </a>
+
+        <div class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i> <span>Início</span>
+            </a>
+            <a href="ocorrencias.html" class="nav-item active">
+                <i class="fas fa-clipboard-list"></i> <span>Ocorrências</span>
+            </a>
+            <a href="presenca.html" class="nav-item">
+                <i class="fas fa-user-check"></i> <span>Presença</span>
+            </a>
+            <a href="mapeamento.html" class="nav-item">
+                <i class="fas fa-map-marked-alt"></i> <span>Mapeamento</span>
+            </a>
+            <a href="agenda.html" class="nav-item">
+                <i class="fas fa-calendar-alt"></i> <span>Agenda</span>
+            </a>
+        </div>
+
+        <div class="nav-user">
+            <div class="hide-when-logged-in">
+                <button class="btn-login-nav" onclick="window.location.href='index.html'">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </div>
+
+            <div class="show-when-logged-in" style="display: none; align-items: center; gap: 12px;">
+                <div class="user-avatar-nav" id="navUserAvatar">P</div>
+                <span class="user-email-nav" id="navUserEmail">professor@email.com</span>
+                <button class="btn-logout-nav" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== CONTEÚDO ===== -->
+    <div class="container" id="mainContent">
+        <div class="card">
+            <h2>📋 Ocorrências dos Alunos</h2>
+            <p>
+                Registre <span class="highlight">ocorrências positivas</span> (elogios, destaques) e 
+                <span class="highlight">ocorrências negativas</span> (comportamento, advertências) dos alunos.
+            </p>
+            
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin: 20px 0;">
+                <button class="btn-submit btn-positive" onclick="adicionarOcorrencia('positiva')">
+                    <i class="fas fa-plus-circle"></i> Positiva
+                </button>
+                <button class="btn-submit btn-negative" onclick="adicionarOcorrencia('negativa')">
+                    <i class="fas fa-exclamation-triangle"></i> Negativa
+                </button>
+            </div>
+
+            <!-- Lista de Ocorrências -->
+            <div id="listaOcorrencias" style="border: 1px solid rgba(0,255,255,0.1); border-radius: 15px; overflow: hidden; background: rgba(0,255,255,0.02);">
+                <div style="padding: 20px; text-align: center; opacity: 0.5;">
+                    <i class="fas fa-database" style="font-size: 2em; display: block; margin-bottom: 10px;"></i>
+                    Nenhuma ocorrência registrada ainda.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // VERIFICAÇÃO DE LOGIN OBRIGATÓRIA
+        // ==========================================
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userData = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            
+            if (!isLoggedIn || !userData) {
+                // Mostrar tela de bloqueio
+                document.getElementById('blockedOverlay').classList.add('active');
+                document.getElementById('mainContent').style.display = 'none';
+                return false;
+            }
+            
+            // Se estiver logado, mostrar conteúdo
+            document.getElementById('blockedOverlay').classList.remove('active');
+            document.getElementById('mainContent').style.display = 'block';
+            
+            // Atualizar interface
+            document.body.classList.add('logged-in');
+            const initial = userData.name ? userData.name.charAt(0).toUpperCase() : 'P';
+            document.getElementById('navUserAvatar').textContent = initial;
+            document.getElementById('navUserEmail').textContent = userData.email || 'professor@email.com';
+            return true;
+        }
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+        function logout() {
+            localStorage.setItem('isLoggedIn', 'false');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // ==========================================
+        // SISTEMA DE OCORRÊNCIAS
+        // ==========================================
+        function adicionarOcorrencia(tipo) {
+            const aluno = prompt(`Digite o nome do aluno para ocorrência ${tipo === 'positiva' ? 'positiva' : 'negativa'}:`);
+            if (!aluno) return;
+            
+            const descricao = prompt('Descreva a ocorrência:');
+            if (!descricao) return;
+            
+            const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias_yvone') || '[]');
+            const nova = {
+                id: Date.now(),
+                aluno: aluno.trim(),
+                tipo: tipo,
+                descricao: descricao.trim(),
+                data: new Date().toLocaleDateString('pt-BR'),
+                hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            ocorrencias.push(nova);
+            localStorage.setItem('ocorrencias_yvone', JSON.stringify(ocorrencias));
+            
+            renderizarOcorrencias();
+        }
+
+        function excluirOcorrencia(id) {
+            if (!confirm('Tem certeza que deseja excluir esta ocorrência?')) return;
+            
+            let ocorrencias = JSON.parse(localStorage.getItem('ocorrencias_yvone') || '[]');
+            ocorrencias = ocorrencias.filter(o => o.id !== id);
+            localStorage.setItem('ocorrencias_yvone', JSON.stringify(ocorrencias));
+            
+            renderizarOcorrencias();
+        }
+
+        function renderizarOcorrencias() {
+            const container = document.getElementById('listaOcorrencias');
+            const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias_yvone') || '[]');
+            
+            if (ocorrencias.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 20px; text-align: center; opacity: 0.5;">
+                        <i class="fas fa-database" style="font-size: 2em; display: block; margin-bottom: 10px;"></i>
+                        Nenhuma ocorrência registrada ainda.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Ordenar por data (mais recente primeiro)
+            ocorrencias.sort((a, b) => b.id - a.id);
+            
+            container.innerHTML = ocorrencias.map(o => `
+                <div class="ocorrencia-item">
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <span class="tipo ${o.tipo === 'positiva' ? 'tipo-positive' : 'tipo-negative'}">
+                            ${o.tipo === 'positiva' ? '✅ Positiva' : '⚠️ Negativa'}
+                        </span>
+                        <strong style="color: #00ffff;">${o.aluno}</strong>
+                        <span style="opacity: 0.7;">${o.descricao}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span style="font-size: 0.8em; opacity: 0.5;">${o.data} ${o.hora}</span>
+                        <button onclick="excluirOcorrencia(${o.id})" style="background: none; border: none; color: #ff4444; cursor: pointer; font-size: 1.2em;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        // Verificar login - BLOQUEIA se não estiver logado
+        if (checkLogin()) {
+            renderizarOcorrencias();
+        }
+
+        console.log('✅ YvoneClass - Página de Ocorrências (protegida)');
+        console.log('🔒 Apenas professores logados podem acessar');
+    </script>
+</body>
+</html>

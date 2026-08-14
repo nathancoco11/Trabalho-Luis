@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YvoneClass - Agenda de Laboratório</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== RESET E CONFIGURAÇÕES GERAIS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e1a;
+            color: #e0f7ff;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .navbar-brand .logo-icon {
+            font-size: 1.8em;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            animation: pulseNeon 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseNeon {
+            0% { text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6); }
+            100% { text-shadow: 0 0 20px rgba(0, 255, 255, 1), 0 0 40px rgba(0, 255, 255, 0.8), 0 0 80px rgba(0, 255, 255, 0.4); }
+        }
+
+        .navbar-brand h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .navbar-brand small {
+            font-size: 0.5em;
+            color: #80ffff;
+            -webkit-text-fill-color: #80ffff;
+            opacity: 0.7;
+            letter-spacing: 3px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            background: transparent;
+            color: #80ffff;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-left: 15px;
+            border-left: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .user-avatar-nav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #0a0e1a;
+            cursor: pointer;
+        }
+
+        .user-email-nav {
+            font-size: 0.85em;
+            color: #80ffff;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-logout-nav {
+            padding: 6px 16px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 30px;
+            background: transparent;
+            color: #ff6666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+        }
+
+        .btn-logout-nav:hover {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.2);
+        }
+
+        .btn-login-nav {
+            padding: 8px 22px;
+            border: 1px solid #00ffff;
+            border-radius: 30px;
+            background: rgba(0, 255, 255, 0.05);
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .btn-login-nav:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .show-when-logged-in {
+            display: none !important;
+        }
+
+        body.logged-in .show-when-logged-in {
+            display: flex !important;
+        }
+
+        body.logged-in .hide-when-logged-in {
+            display: none !important;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: rgba(0, 20, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+        }
+
+        .card h2 {
+            color: #00ffff;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .card p {
+            font-size: 1.05em;
+            line-height: 1.8;
+            color: #b0e0ff;
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        /* ===== AGENDAMENTO ===== */
+        .agenda-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .agenda-card {
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            background: rgba(0, 20, 40, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .agenda-card:hover {
+            border-color: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.05);
+        }
+
+        .agenda-card .lab-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .agenda-card h3 {
+            color: #00ffff;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .agenda-card label {
+            color: #80ffff;
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 12px;
+        }
+
+        .agenda-card label:first-of-type {
+            margin-top: 0;
+        }
+
+        .agenda-card select,
+        .agenda-card input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: rgba(0, 20, 40, 0.5);
+            color: #e0f7ff;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        .agenda-card select:focus,
+        .agenda-card input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.05);
+        }
+
+        .agenda-card select option {
+            background: #0a0e1a;
+            color: #e0f7ff;
+        }
+
+        .btn-agendar {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            color: #0a0e1a;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-agendar:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        /* ===== LISTA DE AGENDAMENTOS ===== */
+        .lista-agendamentos {
+            margin-top: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(0, 255, 255, 0.02);
+        }
+
+        .lista-agendamentos .header-lista {
+            padding: 15px 20px;
+            background: rgba(0, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .lista-agendamentos .header-lista strong {
+            color: #00ffff;
+            font-size: 1.1em;
+        }
+
+        .lista-agendamentos .header-lista .total {
+            font-size: 0.85em;
+            opacity: 0.6;
+        }
+
+        .agendamento-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .agendamento-item:last-child {
+            border-bottom: none;
+        }
+
+        .agendamento-item:hover {
+            background: rgba(0, 255, 255, 0.02);
+        }
+
+        .agendamento-item .info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .agendamento-item .badge-lab {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .badge-lab1 {
+            background: rgba(0, 255, 255, 0.15);
+            color: #00ffff;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .badge-lab2 {
+            background: rgba(0, 136, 255, 0.15);
+            color: #0088ff;
+            border: 1px solid rgba(0, 136, 255, 0.2);
+        }
+
+        .agendamento-item .badge-semana {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .agendamento-item .professor-nome {
+            font-size: 0.85em;
+            color: #80ffff;
+            font-weight: 500;
+        }
+
+        .agendamento-item .professor-nome i {
+            color: #00ffff;
+            margin-right: 4px;
+        }
+
+        .agendamento-item .data-hora {
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+
+        .agendamento-item .status {
+            font-size: 0.75em;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-ativo {
+            background: rgba(0, 255, 100, 0.15);
+            color: #00ff64;
+            border: 1px solid rgba(0, 255, 100, 0.2);
+        }
+
+        .status-contestado {
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .status-cancelado {
+            background: rgba(255, 68, 68, 0.15);
+            color: #ff4444;
+            border: 1px solid rgba(255, 68, 68, 0.2);
+        }
+
+        .agendamento-item .acoes {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-cancelar {
+            padding: 4px 14px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 20px;
+            background: transparent;
+            color: #ff6666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.75em;
+        }
+
+        .btn-cancelar:hover {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.2);
+        }
+
+        .btn-contestar {
+            padding: 4px 14px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            background: transparent;
+            color: #ffd700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.75em;
+        }
+
+        .btn-contestar:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-contestar.contestado {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .btn-contestar.contestado:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ===== TELA DE BLOQUEIO ===== */
+        .blocked-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 30, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .blocked-overlay.active {
+            display: flex;
+        }
+
+        .blocked-overlay .icon-lock {
+            font-size: 4em;
+            color: #00ffff;
+            margin-bottom: 30px;
+            animation: pulseNeon 2s ease-in-out infinite alternate;
+        }
+
+        .blocked-overlay h2 {
+            color: #00ffff;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .blocked-overlay p {
+            color: #b0e0ff;
+            font-size: 1.1em;
+            text-align: center;
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        .blocked-overlay .btn-back {
+            padding: 15px 40px;
+            border: 2px solid #00ffff;
+            border-radius: 50px;
+            background: rgba(0, 255, 255, 0.05);
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .blocked-overlay .btn-back:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 992px) {
+            .navbar {
+                height: auto;
+                padding: 10px 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .nav-menu {
+                gap: 5px;
+                width: 100%;
+                justify-content: center;
+                order: 3;
+                padding-top: 10px;
+                border-top: 1px solid rgba(0, 255, 255, 0.05);
+            }
+
+            .nav-item {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            .nav-user {
+                border-left: none;
+                padding-left: 0;
+            }
+
+            body {
+                padding-top: 120px;
+            }
+
+            .agenda-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .agendamento-item {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .agendamento-item .info {
+                width: 100%;
+            }
+
+            .agendamento-item .acoes {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar-brand h1 {
+                font-size: 1.2em;
+            }
+
+            .navbar-brand .logo-icon {
+                font-size: 1.4em;
+            }
+
+            .nav-item {
+                font-size: 0.7em;
+                padding: 4px 10px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .card {
+                padding: 20px 15px;
+            }
+
+            .card h2 {
+                font-size: 1.4em;
+            }
+
+            .agenda-card {
+                padding: 20px 15px;
+            }
+
+            .agendamento-item {
+                padding: 10px 15px;
+            }
+
+            .agendamento-item .info {
+                gap: 8px;
+            }
+
+            .agendamento-item .badge-lab {
+                font-size: 0.7em;
+                padding: 2px 10px;
+            }
+
+            .agendamento-item .data-hora {
+                font-size: 0.75em;
+            }
+
+            .agendamento-item .professor-nome {
+                font-size: 0.75em;
+            }
+
+            .btn-cancelar,
+            .btn-contestar {
+                font-size: 0.7em;
+                padding: 3px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== TELA DE BLOQUEIO ===== -->
+    <div class="blocked-overlay" id="blockedOverlay">
+        <div class="icon-lock">🔒</div>
+        <h2>Acesso Restrito</h2>
+        <p>
+            Esta página é exclusiva para <span style="color: #00ffff; font-weight: 600;">professores</span>.
+            Faça login para acessar o sistema de agendamento de laboratório.
+        </p>
+        <a href="index.html" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Voltar para o Início
+        </a>
+    </div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <span class="logo-icon">✦</span>
+            <div>
+                <h1>YvoneClass <small>EDU</small></h1>
+            </div>
+        </a>
+
+        <div class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i> <span>Início</span>
+            </a>
+            <a href="ocorrencias.html" class="nav-item">
+                <i class="fas fa-clipboard-list"></i> <span>Ocorrências</span>
+            </a>
+            <a href="presenca.html" class="nav-item">
+                <i class="fas fa-user-check"></i> <span>Presença</span>
+            </a>
+            <a href="mapeamento.html" class="nav-item">
+                <i class="fas fa-map-marked-alt"></i> <span>Mapeamento</span>
+            </a>
+            <a href="agenda.html" class="nav-item active">
+                <i class="fas fa-calendar-alt"></i> <span>Agenda</span>
+            </a>
+        </div>
+
+        <div class="nav-user">
+            <div class="hide-when-logged-in">
+                <button class="btn-login-nav" onclick="window.location.href='index.html'">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </div>
+
+            <div class="show-when-logged-in" style="display: none; align-items: center; gap: 12px;">
+                <div class="user-avatar-nav" id="navUserAvatar">P</div>
+                <span class="user-email-nav" id="navUserEmail">professor@email.com</span>
+                <button class="btn-logout-nav" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== CONTEÚDO ===== -->
+    <div class="container" id="mainContent">
+        <div class="card">
+            <h2>💻 Agendamento de Laboratório</h2>
+            <p>
+                Agende o uso dos <span class="highlight">Laboratórios 1 e 2</span> conforme semana 
+                <span class="highlight">par</span> ou <span class="highlight">ímpar</span>.
+                Selecione o laboratório, a semana, a data e o horário. O sistema salva automaticamente 
+                o <span class="highlight">nome do professor</span> que fez o agendamento.
+            </p>
+
+            <div class="agenda-grid">
+                <!-- Laboratório 1 -->
+                <div class="agenda-card">
+                    <div class="lab-icon">🧪</div>
+                    <h3>Laboratório 1</h3>
+                    <label for="semanaLab1">📅 Semana:</label>
+                    <select id="semanaLab1">
+                        <option value="Par">Par</option>
+                        <option value="Ímpar">Ímpar</option>
+                    </select>
+                    <label for="dataLab1">📆 Dia:</label>
+                    <input type="date" id="dataLab1">
+                    <label for="horaLab1">🕐 Horário:</label>
+                    <input type="time" id="horaLab1">
+                    <button class="btn-agendar" onclick="agendarLab(1)">
+                        <i class="fas fa-calendar-plus"></i> Agendar Lab 1
+                    </button>
+                </div>
+
+                <!-- Laboratório 2 -->
+                <div class="agenda-card">
+                    <div class="lab-icon">💻</div>
+                    <h3>Laboratório 2</h3>
+                    <label for="semanaLab2">📅 Semana:</label>
+                    <select id="semanaLab2">
+                        <option value="Par">Par</option>
+                        <option value="Ímpar">Ímpar</option>
+                    </select>
+                    <label for="dataLab2">📆 Dia:</label>
+                    <input type="date" id="dataLab2">
+                    <label for="horaLab2">🕐 Horário:</label>
+                    <input type="time" id="horaLab2">
+                    <button class="btn-agendar" onclick="agendarLab(2)">
+                        <i class="fas fa-calendar-plus"></i> Agendar Lab 2
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lista de Agendamentos -->
+            <div class="lista-agendamentos">
+                <div class="header-lista">
+                    <strong>📋 Agendamentos Ativos</strong>
+                    <span class="total" id="totalAgendamentos">Total: 0</span>
+                </div>
+                <div id="listaAgendamentos">
+                    <div style="padding: 30px 20px; text-align: center; opacity: 0.5;">
+                        <i class="fas fa-clock" style="font-size: 2em; display: block; margin-bottom: 10px;"></i>
+                        Nenhum agendamento registrado.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // VERIFICAÇÃO DE LOGIN OBRIGATÓRIA
+        // ==========================================
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userData = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            
+            if (!isLoggedIn || !userData) {
+                document.getElementById('blockedOverlay').classList.add('active');
+                document.getElementById('mainContent').style.display = 'none';
+                return false;
+            }
+            
+            document.getElementById('blockedOverlay').classList.remove('active');
+            document.getElementById('mainContent').style.display = 'block';
+            
+            document.body.classList.add('logged-in');
+            const initial = userData.name ? userData.name.charAt(0).toUpperCase() : 'P';
+            document.getElementById('navUserAvatar').textContent = initial;
+            document.getElementById('navUserEmail').textContent = userData.email || 'professor@email.com';
+            return true;
+        }
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+        function logout() {
+            localStorage.setItem('isLoggedIn', 'false');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // ==========================================
+        // SISTEMA DE AGENDAMENTO (COM NOME DO PROFESSOR)
+        // ==========================================
+        
+        function agendarLab(lab) {
+            const semana = document.getElementById(`semanaLab${lab}`).value;
+            const data = document.getElementById(`dataLab${lab}`).value;
+            const hora = document.getElementById(`horaLab${lab}`).value;
+            
+            if (!data || !hora) {
+                alert('⚠️ Por favor, preencha a data e o horário!');
+                return;
+            }
+            
+            // Pegar o nome do professor logado
+            const userData = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            const nomeProfessor = userData ? userData.name : 'Professor não identificado';
+            
+            // Verificar se já existe agendamento para este laboratório na mesma data/hora
+            const agendamentos = JSON.parse(localStorage.getItem('agendamentos_yvone') || '[]');
+            const conflito = agendamentos.some(a => 
+                a.lab === lab && 
+                a.data === data && 
+                a.hora === hora &&
+                a.status !== 'cancelado'
+            );
+            
+            if (conflito) {
+                alert(`⚠️ O Laboratório ${lab} já está agendado para esta data e horário!`);
+                return;
+            }
+            
+            // Formatar data para exibição
+            const dataObj = new Date(data + 'T' + hora);
+            const dataFormatada = dataObj.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const novo = {
+                id: Date.now(),
+                lab: lab,
+                semana: semana,
+                data: data,
+                hora: hora,
+                dataFormatada: dataFormatada,
+                professor: nomeProfessor,
+                status: 'ativo', // ativo, contestado, cancelado
+                criadoEm: new Date().toISOString()
+            };
+            
+            agendamentos.push(novo);
+            localStorage.setItem('agendamentos_yvone', JSON.stringify(agendamentos));
+            
+            // Limpar campos
+            document.getElementById(`dataLab${lab}`).value = '';
+            document.getElementById(`horaLab${lab}`).value = '';
+            
+            renderizarAgendamentos();
+            alert(`✅ Laboratório ${lab} agendado com sucesso!\n📅 ${dataFormatada}\n👨‍🏫 Professor: ${nomeProfessor}`);
+        }
+
+        function cancelarAgendamento(id) {
+            if (!confirm('⚠️ Tem certeza que deseja cancelar este agendamento?')) return;
+            
+            let agendamentos = JSON.parse(localStorage.getItem('agendamentos_yvone') || '[]');
+            const agendamento = agendamentos.find(a => a.id === id);
+            
+            if (agendamento) {
+                agendamento.status = 'cancelado';
+                localStorage.setItem('agendamentos_yvone', JSON.stringify(agendamentos));
+                renderizarAgendamentos();
+                alert(`✅ Agendamento do Laboratório ${agendamento.lab} cancelado com sucesso!`);
+            }
+        }
+
+        function contestarAgendamento(id) {
+            if (!confirm('⚠️ Tem certeza que deseja contestar este agendamento? Isso indica que o professor não usou o laboratório.')) return;
+            
+            let agendamentos = JSON.parse(localStorage.getItem('agendamentos_yvone') || '[]');
+            const agendamento = agendamentos.find(a => a.id === id);
+            
+            if (agendamento) {
+                if (agendamento.status === 'contestado') {
+                    alert('ℹ️ Este agendamento já foi contestado.');
+                    return;
+                }
+                
+                agendamento.status = 'contestado';
+                localStorage.setItem('agendamentos_yvone', JSON.stringify(agendamentos));
+                renderizarAgendamentos();
+                alert(`⚠️ Agendamento do Laboratório ${agendamento.lab} contestado!\nProfessor ${agendamento.professor} não usou o laboratório.`);
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'ativo': return '✅ Ativo';
+                case 'contestado': return '⚠️ Contestado';
+                case 'cancelado': return '❌ Cancelado';
+                default: return '✅ Ativo';
+            }
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'ativo': return 'status-ativo';
+                case 'contestado': return 'status-contestado';
+                case 'cancelado': return 'status-cancelado';
+                default: return 'status-ativo';
+            }
+        }
+
+        function renderizarAgendamentos() {
+            const container = document.getElementById('listaAgendamentos');
+            const totalSpan = document.getElementById('totalAgendamentos');
+            const agendamentos = JSON.parse(localStorage.getItem('agendamentos_yvone') || '[]');
+            
+            // Filtrar apenas agendamentos ativos e contestados (não mostrar cancelados)
+            const ativos = agendamentos.filter(a => a.status !== 'cancelado');
+            
+            totalSpan.textContent = `Total: ${ativos.length}`;
+            
+            if (ativos.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 30px 20px; text-align: center; opacity: 0.5;">
+                        <i class="fas fa-clock" style="font-size: 2em; display: block; margin-bottom: 10px;"></i>
+                        Nenhum agendamento ativo.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Ordenar por data (mais próximo primeiro)
+            ativos.sort((a, b) => {
+                const dataA = new Date(a.data + 'T' + a.hora);
+                const dataB = new Date(b.data + 'T' + b.hora);
+                return dataA - dataB;
+            });
+            
+            container.innerHTML = ativos.map(a => `
+                <div class="agendamento-item">
+                    <div class="info">
+                        <span class="badge-lab ${a.lab === 1 ? 'badge-lab1' : 'badge-lab2'}">
+                            ${a.lab === 1 ? '🧪 Lab 1' : '💻 Lab 2'}
+                        </span>
+                        <span class="badge-semana">📅 ${a.semana}</span>
+                        <span class="data-hora">🕐 ${a.dataFormatada}</span>
+                        <span class="professor-nome"><i class="fas fa-user"></i> ${a.professor || 'Não identificado'}</span>
+                        <span class="status ${getStatusClass(a.status)}">${getStatusText(a.status)}</span>
+                    </div>
+                    <div class="acoes">
+                        ${a.status === 'ativo' ? `
+                            <button class="btn-contestar" onclick="contestarAgendamento(${a.id})">
+                                <i class="fas fa-exclamation-triangle"></i> Contestar
+                            </button>
+                        ` : `
+                            <button class="btn-contestar contestado" disabled>
+                                <i class="fas fa-check"></i> Contestado
+                            </button>
+                        `}
+                        <button class="btn-cancelar" onclick="cancelarAgendamento(${a.id})">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        // Datas padrão = hoje
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('dataLab1').value = hoje;
+        document.getElementById('dataLab2').value = hoje;
+
+        if (checkLogin()) {
+            renderizarAgendamentos();
+        }
+
+        console.log('✅ YvoneClass - Página de Agenda (atualizada)');
+        console.log('🔒 Apenas professores logados podem acessar');
+        console.log('📌 Funcionalidades: Agendar com nome, Visualizar, Contestar, Cancelar');
+    </script>
+</body>
+</html>

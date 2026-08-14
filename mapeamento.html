@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YvoneClass - Mapeamento de Sala</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== RESET E CONFIGURAÇÕES GERAIS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e1a;
+            color: #e0f7ff;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .navbar-brand .logo-icon {
+            font-size: 1.8em;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            animation: pulseNeon 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseNeon {
+            0% { text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6); }
+            100% { text-shadow: 0 0 20px rgba(0, 255, 255, 1), 0 0 40px rgba(0, 255, 255, 0.8), 0 0 80px rgba(0, 255, 255, 0.4); }
+        }
+
+        .navbar-brand h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .navbar-brand small {
+            font-size: 0.5em;
+            color: #80ffff;
+            -webkit-text-fill-color: #80ffff;
+            opacity: 0.7;
+            letter-spacing: 3px;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            background: transparent;
+            color: #80ffff;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-left: 15px;
+            border-left: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .user-avatar-nav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #0a0e1a;
+            cursor: pointer;
+        }
+
+        .user-email-nav {
+            font-size: 0.85em;
+            color: #80ffff;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-logout-nav {
+            padding: 6px 16px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 30px;
+            background: transparent;
+            color: #ff6666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+        }
+
+        .btn-logout-nav:hover {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.2);
+        }
+
+        .btn-login-nav {
+            padding: 8px 22px;
+            border: 1px solid #00ffff;
+            border-radius: 30px;
+            background: rgba(0, 255, 255, 0.05);
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .btn-login-nav:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .show-when-logged-in {
+            display: none !important;
+        }
+
+        body.logged-in .show-when-logged-in {
+            display: flex !important;
+        }
+
+        body.logged-in .hide-when-logged-in {
+            display: none !important;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: rgba(0, 20, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+        }
+
+        .card h2 {
+            color: #00ffff;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .card p {
+            font-size: 1.05em;
+            line-height: 1.8;
+            color: #b0e0ff;
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        /* ===== CONTROLES ===== */
+        .controles {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            align-items: end;
+        }
+
+        .controles .grupo {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .controles label {
+            color: #80ffff;
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .controles select,
+        .controles input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(0, 20, 40, 0.5);
+            color: #e0f7ff;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        .controles select:focus,
+        .controles input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.05);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            color: #0a0e1a;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00ff64, #00cc50);
+            color: #0a0e1a;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: #fff;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+        }
+
+        .btn-outline:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+        }
+
+        /* ===== MAPA DA SALA ===== */
+        .mapa-container {
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .mapa-sala {
+            display: grid;
+            gap: 12px;
+            padding: 25px;
+            border: 2px solid rgba(0, 255, 255, 0.1);
+            border-radius: 15px;
+            background: rgba(0, 20, 40, 0.3);
+            min-height: 350px;
+            min-width: 500px;
+            position: relative;
+        }
+
+        .mapa-sala::before {
+            content: '🧑‍🏫 MESA DO PROFESSOR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 20, 40, 0.9);
+            padding: 2px 20px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            color: #80ffff;
+            opacity: 0.5;
+            letter-spacing: 2px;
+        }
+
+        .mapa-lugar {
+            padding: 15px 10px;
+            border: 2px solid rgba(0, 255, 255, 0.12);
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(0, 255, 255, 0.02);
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .mapa-lugar:hover {
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.08);
+            transform: scale(1.03);
+            z-index: 2;
+        }
+
+        .mapa-lugar.vazio {
+            opacity: 0.5;
+            border-style: dashed;
+        }
+
+        .mapa-lugar.vazio:hover {
+            opacity: 1;
+        }
+
+        .mapa-lugar.ocupado {
+            border-color: rgba(0, 255, 255, 0.3);
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .mapa-lugar .icone-aluno {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .mapa-lugar .nome-aluno {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: #00ffff;
+            word-break: break-word;
+            max-width: 100%;
+        }
+
+        .mapa-lugar .input-aluno {
+            width: 100%;
+            padding: 8px 10px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(0, 20, 40, 0.8);
+            color: #e0f7ff;
+            font-size: 0.9em;
+            text-align: center;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .mapa-lugar .input-aluno:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .mapa-lugar .input-aluno::placeholder {
+            color: rgba(128, 255, 255, 0.3);
+            font-size: 0.8em;
+        }
+
+        .mapa-lugar .btn-salvar-aluno {
+            margin-top: 5px;
+            padding: 4px 12px;
+            border: none;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #00ff64, #00cc50);
+            color: #0a0e1a;
+            font-size: 0.7em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mapa-lugar .btn-salvar-aluno:hover {
+            transform: scale(1.05);
+        }
+
+        .mapa-lugar .btn-remover-aluno {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            background: #ff4444;
+            color: #fff;
+            font-size: 0.7em;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .mapa-lugar.ocupado:hover .btn-remover-aluno {
+            opacity: 1;
+        }
+
+        .mapa-lugar .btn-remover-aluno:hover {
+            transform: scale(1.2);
+        }
+
+        /* ===== LEGENDA ===== */
+        .legenda {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.05);
+            border-radius: 15px;
+            background: rgba(0, 255, 255, 0.02);
+            margin-top: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+
+        .legenda-item .cor {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .legenda-item .cor.vazio {
+            background: transparent;
+            border-style: dashed;
+        }
+
+        .legenda-item .cor.ocupado {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+
+        .legenda-item .cor.edicao {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+        }
+
+        /* ===== TELA DE BLOQUEIO ===== */
+        .blocked-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 30, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .blocked-overlay.active {
+            display: flex;
+        }
+
+        .blocked-overlay .icon-lock {
+            font-size: 4em;
+            color: #00ffff;
+            margin-bottom: 30px;
+            animation: pulseNeon 2s ease-in-out infinite alternate;
+        }
+
+        .blocked-overlay h2 {
+            color: #00ffff;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .blocked-overlay p {
+            color: #b0e0ff;
+            font-size: 1.1em;
+            text-align: center;
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+
+        .blocked-overlay .btn-back {
+            padding: 15px 40px;
+            border: 2px solid #00ffff;
+            border-radius: 50px;
+            background: rgba(0, 255, 255, 0.05);
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .blocked-overlay .btn-back:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 992px) {
+            .navbar {
+                height: auto;
+                padding: 10px 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .nav-menu {
+                gap: 5px;
+                width: 100%;
+                justify-content: center;
+                order: 3;
+                padding-top: 10px;
+                border-top: 1px solid rgba(0, 255, 255, 0.05);
+            }
+
+            .nav-item {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            .nav-user {
+                border-left: none;
+                padding-left: 0;
+            }
+
+            body {
+                padding-top: 120px;
+            }
+
+            .controles {
+                flex-direction: column;
+            }
+
+            .controles .grupo {
+                min-width: 100%;
+            }
+
+            .mapa-sala {
+                gap: 10px;
+                padding: 20px;
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar-brand h1 {
+                font-size: 1.2em;
+            }
+
+            .navbar-brand .logo-icon {
+                font-size: 1.4em;
+            }
+
+            .nav-item {
+                font-size: 0.7em;
+                padding: 4px 10px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .mapa-sala {
+                gap: 8px;
+                padding: 15px;
+                min-height: 250px;
+            }
+
+            .mapa-lugar {
+                min-height: 70px;
+                padding: 10px 8px;
+            }
+
+            .mapa-lugar .nome-aluno {
+                font-size: 0.75em;
+            }
+
+            .mapa-lugar .icone-aluno {
+                font-size: 1.4em;
+            }
+
+            .mapa-lugar .input-aluno {
+                font-size: 0.75em;
+                padding: 6px 8px;
+            }
+
+            .card {
+                padding: 20px 15px;
+            }
+
+            .card h2 {
+                font-size: 1.4em;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.85em;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .legenda {
+                gap: 10px;
+            }
+
+            .legenda-item {
+                font-size: 0.7em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== TELA DE BLOQUEIO ===== -->
+    <div class="blocked-overlay" id="blockedOverlay">
+        <div class="icon-lock">🔒</div>
+        <h2>Acesso Restrito</h2>
+        <p>
+            Esta página é exclusiva para <span style="color: #00ffff; font-weight: 600;">professores</span>.
+            Faça login para acessar o sistema de mapeamento de sala.
+        </p>
+        <a href="index.html" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Voltar para o Início
+        </a>
+    </div>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <span class="logo-icon">✦</span>
+            <div>
+                <h1>YvoneClass <small>EDU</small></h1>
+            </div>
+        </a>
+
+        <div class="nav-menu">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-home"></i> <span>Início</span>
+            </a>
+            <a href="ocorrencias.html" class="nav-item">
+                <i class="fas fa-clipboard-list"></i> <span>Ocorrências</span>
+            </a>
+            <a href="presenca.html" class="nav-item">
+                <i class="fas fa-user-check"></i> <span>Presença</span>
+            </a>
+            <a href="mapeamento.html" class="nav-item active">
+                <i class="fas fa-map-marked-alt"></i> <span>Mapeamento</span>
+            </a>
+            <a href="agenda.html" class="nav-item">
+                <i class="fas fa-calendar-alt"></i> <span>Agenda</span>
+            </a>
+        </div>
+
+        <div class="nav-user">
+            <div class="hide-when-logged-in">
+                <button class="btn-login-nav" onclick="window.location.href='index.html'">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </div>
+
+            <div class="show-when-logged-in" style="display: none; align-items: center; gap: 12px;">
+                <div class="user-avatar-nav" id="navUserAvatar">P</div>
+                <span class="user-email-nav" id="navUserEmail">professor@email.com</span>
+                <button class="btn-logout-nav" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== CONTEÚDO ===== -->
+    <div class="container" id="mainContent">
+        <div class="card">
+            <h2>🗺️ Mapeamento de Sala</h2>
+            <p>
+                Organize os <span class="highlight">lugares dos alunos</span> na sala de aula.
+                Clique em um quadradinho, digite o nome do aluno e clique em <span class="highlight">Salvar</span>.
+                Passe o mouse sobre um aluno para <span class="highlight">removê-lo</span>.
+            </p>
+
+            <!-- Controles -->
+            <div class="controles">
+                <div class="grupo">
+                    <label for="selectTurmaMapa">📚 Turma:</label>
+                    <select id="selectTurmaMapa">
+                        <option value="1A">1º Ano A</option>
+                        <option value="1B">1º Ano B</option>
+                        <option value="2A">2º Ano A</option>
+                        <option value="2B">2º Ano B</option>
+                        <option value="3A">3º Ano A</option>
+                        <option value="3B">3º Ano B</option>
+                    </select>
+                </div>
+                <div class="grupo" style="flex: 0.5; min-width: 120px;">
+                    <label for="totalLugares">🪑 Lugares:</label>
+                    <select id="totalLugares">
+                        <option value="24">24 (6x4)</option>
+                        <option value="30">30 (6x5)</option>
+                        <option value="36">36 (6x6)</option>
+                        <option value="20">20 (5x4)</option>
+                        <option value="15">15 (5x3)</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="carregarMapa()">
+                        <i class="fas fa-edit"></i> Carregar
+                    </button>
+                    <button class="btn btn-success" onclick="salvarMapa()">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                    <button class="btn btn-outline" onclick="resetarMapa()">
+                        <i class="fas fa-undo"></i> Resetar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mapa da Sala -->
+            <div class="mapa-container">
+                <div class="mapa-sala" id="mapaSala">
+                    <!-- Lugares gerados via JavaScript -->
+                    <div style="grid-column: 1 / -1; text-align: center; opacity: 0.5; padding: 60px 0;">
+                        <i class="fas fa-chair" style="font-size: 3em; display: block; margin-bottom: 15px;"></i>
+                        Selecione uma turma e clique em "Carregar"
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legenda -->
+            <div class="legenda">
+                <span style="font-size: 0.9em; opacity: 0.5; margin-right: 10px;">
+                    <i class="fas fa-info-circle"></i> Clique no quadradinho para adicionar/editar
+                </span>
+                <div class="legenda-item">
+                    <span class="cor vazio"></span>
+                    Vazio
+                </div>
+                <div class="legenda-item">
+                    <span class="cor ocupado"></span>
+                    Ocupado
+                </div>
+                <div class="legenda-item">
+                    <span class="cor edicao"></span>
+                    Editando
+                </div>
+                <div class="legenda-item" style="margin-left: auto; opacity: 0.4;">
+                    <i class="fas fa-mouse-pointer"></i> Passe o mouse para ações
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // VERIFICAÇÃO DE LOGIN OBRIGATÓRIA
+        // ==========================================
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userData = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            
+            if (!isLoggedIn || !userData) {
+                document.getElementById('blockedOverlay').classList.add('active');
+                document.getElementById('mainContent').style.display = 'none';
+                return false;
+            }
+            
+            document.getElementById('blockedOverlay').classList.remove('active');
+            document.getElementById('mainContent').style.display = 'block';
+            
+            document.body.classList.add('logged-in');
+            const initial = userData.name ? userData.name.charAt(0).toUpperCase() : 'P';
+            document.getElementById('navUserAvatar').textContent = initial;
+            document.getElementById('navUserEmail').textContent = userData.email || 'professor@email.com';
+            return true;
+        }
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+        function logout() {
+            localStorage.setItem('isLoggedIn', 'false');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // ==========================================
+        // SISTEMA DE MAPEAMENTO (CORRIGIDO)
+        // ==========================================
+        
+        let mapaAtual = {};
+        let turmaAtual = '1A';
+        let totalLugaresAtual = 24;
+
+        function carregarMapa() {
+            const turma = document.getElementById('selectTurmaMapa').value;
+            const total = parseInt(document.getElementById('totalLugares').value);
+            
+            turmaAtual = turma;
+            totalLugaresAtual = total;
+            
+            const mapa = document.getElementById('mapaSala');
+            
+            // Carregar mapa salvo
+            const mapasSalvos = JSON.parse(localStorage.getItem('mapas_yvone') || '{}');
+            const lugares = mapasSalvos[turma] || {};
+            mapaAtual = lugares;
+            
+            const colunas = Math.min(6, Math.ceil(Math.sqrt(total)));
+            
+            // Ajustar grid
+            mapa.style.gridTemplateColumns = `repeat(${colunas}, 1fr)`;
+            
+            let html = '';
+            
+            for (let i = 0; i < total; i++) {
+                const posicao = i + 1;
+                const aluno = lugares[posicao] || null;
+                
+                if (aluno) {
+                    html += `
+                        <div class="mapa-lugar ocupado" data-posicao="${posicao}" onclick="editarAluno(${posicao})">
+                            <span class="icone-aluno">🧑‍🎓</span>
+                            <span class="nome-aluno">${aluno}</span>
+                            <button class="btn-remover-aluno" onclick="event.stopPropagation(); removerAluno(${posicao})" title="Remover aluno">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="mapa-lugar vazio" onclick="editarAluno(${posicao})" data-posicao="${posicao}">
+                            <span style="font-size: 0.8em; opacity: 0.3;">
+                                <i class="fas fa-plus-circle"></i>
+                            </span>
+                            <span style="font-size: 0.7em; opacity: 0.3; margin-top: 5px;">Clique para adicionar</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            mapa.innerHTML = html;
+            
+            // Salvar referência
+            mapa.dataset.turma = turma;
+            mapa.dataset.total = total;
+        }
+
+        function editarAluno(posicao) {
+            const turma = document.getElementById('selectTurmaMapa').value;
+            const mapasSalvos = JSON.parse(localStorage.getItem('mapas_yvone') || '{}');
+            const lugares = mapasSalvos[turma] || {};
+            
+            const alunoAtual = lugares[posicao] || '';
+            
+            // Encontrar o elemento do lugar
+            const divLugar = document.querySelector(`.mapa-lugar[data-posicao="${posicao}"]`);
+            
+            if (!divLugar) return;
+            
+            // Se já estiver em modo de edição, não faz nada
+            if (divLugar.classList.contains('editando')) return;
+            
+            // Mudar para modo de edição
+            divLugar.className = 'mapa-lugar editando';
+            
+            divLugar.innerHTML = `
+                <span style="font-size: 0.7em; opacity: 0.4; margin-bottom: 5px;">Digite o nome do aluno:</span>
+                <input type="text" class="input-aluno" value="${alunoAtual}" placeholder="Ex: João Silva" maxlength="30" autofocus>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <button class="btn-salvar-aluno" onclick="event.stopPropagation(); salvarAluno(${posicao})">
+                        <i class="fas fa-check"></i> Salvar
+                    </button>
+                    <button class="btn-salvar-aluno" style="background: #ff4444; color: #fff;" onclick="event.stopPropagation(); cancelarEdicao(${posicao})">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            `;
+            
+            // Focar no input
+            const input = divLugar.querySelector('.input-aluno');
+            input.focus();
+            input.select();
+            
+            // Permitir salvar com Enter
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    salvarAluno(posicao);
+                }
+            });
+        }
+
+        function salvarAluno(posicao) {
+            const turma = document.getElementById('selectTurmaMapa').value;
+            const divLugar = document.querySelector(`.mapa-lugar[data-posicao="${posicao}"]`);
+            
+            if (!divLugar) return;
+            
+            const input = divLugar.querySelector('.input-aluno');
+            if (!input) return;
+            
+            const nome = input.value.trim();
+            
+            if (!nome) {
+                alert('⚠️ Digite o nome do aluno!');
+                input.focus();
+                return;
+            }
+            
+            // Salvar no localStorage
+            const mapasSalvos = JSON.parse(localStorage.getItem('mapas_yvone') || '{}');
+            const lugares = mapasSalvos[turma] || {};
+            lugares[posicao] = nome;
+            mapasSalvos[turma] = lugares;
+            localStorage.setItem('mapas_yvone', JSON.stringify(mapasSalvos));
+            mapaAtual = lugares;
+            
+            // Recarregar o mapa para atualizar a visualização
+            carregarMapa();
+        }
+
+        function cancelarEdicao(posicao) {
+            // Recarregar o mapa para voltar ao estado anterior
+            carregarMapa();
+        }
+
+        function removerAluno(posicao) {
+            const turma = document.getElementById('selectTurmaMapa').value;
+            const mapasSalvos = JSON.parse(localStorage.getItem('mapas_yvone') || '{}');
+            const lugares = mapasSalvos[turma] || {};
+            
+            const aluno = lugares[posicao];
+            if (!aluno) return;
+            
+            if (confirm(`❌ Remover ${aluno} da posição ${posicao}?`)) {
+                delete lugares[posicao];
+                mapasSalvos[turma] = lugares;
+                localStorage.setItem('mapas_yvone', JSON.stringify(mapasSalvos));
+                mapaAtual = lugares;
+                carregarMapa();
+            }
+        }
+
+        function salvarMapa() {
+            const turma = document.getElementById('selectTurmaMapa').value;
+            const mapasSalvos = JSON.parse(localStorage.getItem('mapas_yvone') || '{}');
+            const lugares = mapasSalvos[turma] || {};
+            
+            const totalAlunos = Object.keys(lugares).length;
+            const totalVagos = parseInt(document.getElementById('totalLugares').value) - totalAlunos;
+            
+            alert(`✅ Mapa da turma ${turma} salvo com sucesso!\n\n📊 Alunos posicionados: ${totalAlunos}\n🪑 Lugares vagos: ${totalVagos}`);
+        }
+
+        function resetarMapa() {
+            if (!confirm('⚠️ Tem certeza que deseja resetar o mapa? Todos os alunos serão removidos!')) return;
+            
+            const turma = document.getElementById('selectTurmaMapa').value;
+            const mapasSalvos = JSON.parse(localStorage.getItem('mapas_yvone') || '{}');
+            mapasSalvos[turma] = {};
+            localStorage.setItem('mapas_yvone', JSON.stringify(mapasSalvos));
+            mapaAtual = {};
+            
+            carregarMapa();
+            
+            alert('🔄 Mapa resetado com sucesso!');
+        }
+
+        // ==========================================
+        // INICIALIZAÇÃO
+        // ==========================================
+        if (checkLogin()) {
+            carregarMapa();
+        }
+
+        console.log('✅ YvoneClass - Página de Mapeamento (corrigida)');
+        console.log('🔒 Apenas professores logados podem acessar');
+        console.log('📌 Funcionalidades: Adicionar, Remover, Salvar, Resetar');
+    </script>
+</body>
+</html>

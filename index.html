@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YvoneClass - Sistema Escolar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== RESET E CONFIGURAÇÕES GERAIS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e1a;
+            color: #e0f7ff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== FUNDO NEON ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* ===== NAVBAR FIXA ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .navbar-brand .logo-icon {
+            font-size: 1.8em;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            animation: pulseNeon 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseNeon {
+            0% { text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6); }
+            100% { text-shadow: 0 0 20px rgba(0, 255, 255, 1), 0 0 40px rgba(0, 255, 255, 0.8), 0 0 80px rgba(0, 255, 255, 0.4); }
+        }
+
+        .navbar-brand h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .navbar-brand small {
+            font-size: 0.5em;
+            color: #80ffff;
+            -webkit-text-fill-color: #80ffff;
+            opacity: 0.7;
+            letter-spacing: 3px;
+        }
+
+        /* Menu de navegação - SÓ APARECE QUANDO LOGADO */
+        .nav-menu {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        body.logged-in .nav-menu {
+            display: flex;
+        }
+
+        .nav-item {
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            background: transparent;
+            color: #80ffff;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .nav-item i {
+            font-size: 1em;
+        }
+
+        /* Área do usuário na navbar */
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-left: 15px;
+            border-left: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .user-avatar-nav {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            color: #0a0e1a;
+            cursor: pointer;
+        }
+
+        .user-email-nav {
+            font-size: 0.85em;
+            color: #80ffff;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-logout-nav {
+            padding: 6px 16px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 30px;
+            background: transparent;
+            color: #ff6666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+        }
+
+        .btn-logout-nav:hover {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.2);
+        }
+
+        .btn-login-nav {
+            padding: 8px 22px;
+            border: 1px solid #00ffff;
+            border-radius: 30px;
+            background: rgba(0, 255, 255, 0.05);
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .btn-login-nav:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        /* ===== ESTADOS DE LOGIN ===== */
+        .show-when-logged-in {
+            display: none !important;
+        }
+
+        body.logged-in .show-when-logged-in {
+            display: flex !important;
+        }
+
+        body.logged-in .hide-when-logged-in {
+            display: none !important;
+        }
+
+        /* ===== CARD PRINCIPAL ===== */
+        .card {
+            background: rgba(0, 20, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 50px 40px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+        }
+
+        .card .icon-main {
+            font-size: 4em;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+            animation: pulseNeon 2s ease-in-out infinite alternate;
+        }
+
+        .card h2 {
+            color: #00ffff;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .card p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #b0e0ff;
+            margin-bottom: 15px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        /* ===== GRID DE FUNCIONALIDADES (4 CARDS EM LINHA CENTRALIZADOS) ===== */
+        .features-grid {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        body.logged-in .features-grid {
+            display: grid;
+        }
+
+        .feature-card {
+            padding: 25px 15px;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(0, 20, 40, 0.3);
+            text-decoration: none;
+            color: #e0f7ff;
+        }
+
+        .feature-card:hover {
+            border-color: #00ffff;
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+        }
+
+        .feature-card .icon {
+            font-size: 2.5em;
+            color: #00ffff;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #80ffff;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 0.85em;
+            opacity: 0.7;
+            margin: 0;
+        }
+
+        /* ===== BOTÃO ACESSAR SISTEMA - LONGO E FINO ===== */
+        .btn-access-container {
+            display: none;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        body.logged-in .btn-access-container {
+            display: flex;
+        }
+
+        .btn-access {
+            padding: 12px 40px;
+            border: 2px solid #00ffff;
+            border-radius: 50px;
+            background: rgba(0, 255, 255, 0.05);
+            color: #00ffff;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-access:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        /* ===== MENSAGEM PARA DESLOGADO ===== */
+        .mensagem-deslogado {
+            margin-top: 20px;
+            padding: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 15px;
+            background: rgba(0, 255, 255, 0.02);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mensagem-deslogado i {
+            color: #00ffff;
+            margin-right: 10px;
+        }
+
+        .mensagem-deslogado strong {
+            color: #00ffff;
+        }
+
+        .mensagem-deslogado span {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        .btn-entrar-grande {
+            margin-top: 20px;
+            padding: 15px 50px;
+            border: 2px solid #00ffff;
+            border-radius: 50px;
+            background: rgba(0, 255, 255, 0.05);
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .btn-entrar-grande:hover {
+            background: #00ffff;
+            color: #0a0e1a;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* ===== MODAL DE LOGIN ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-content {
+            background: rgba(10, 14, 30, 0.98);
+            margin: 5% auto;
+            padding: 40px;
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 25px;
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.05);
+        }
+
+        .modal-content h2 {
+            color: #00ffff;
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 2em;
+            color: #80ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+        }
+
+        .close-modal:hover {
+            color: #00ffff;
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #80ffff;
+            font-size: 0.9em;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(0, 255, 255, 0.15);
+            border-radius: 12px;
+            background: rgba(0, 20, 40, 0.5);
+            color: #e0f7ff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(128, 255, 255, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #00ffff, #0088ff);
+            color: #0a0e1a;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-submit:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #80ffff;
+        }
+
+        .form-footer a {
+            color: #00ffff;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: all 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .status-message {
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .status-message.success {
+            display: block;
+            background: rgba(0, 255, 100, 0.1);
+            border: 1px solid #00ff64;
+            color: #00ff64;
+        }
+
+        .status-message.error {
+            display: block;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 992px) {
+            .navbar {
+                height: auto;
+                padding: 10px 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .nav-menu {
+                gap: 5px;
+                width: 100%;
+                justify-content: center;
+                order: 3;
+                padding-top: 10px;
+                border-top: 1px solid rgba(0, 255, 255, 0.05);
+            }
+
+            .nav-item {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            .nav-user {
+                border-left: none;
+                padding-left: 0;
+            }
+
+            .container {
+                padding: 20px 15px;
+                min-height: calc(100vh - 120px);
+            }
+
+            .card {
+                padding: 30px 20px;
+            }
+
+            .card h2 {
+                font-size: 1.8em;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                max-width: 100%;
+            }
+
+            .btn-access {
+                padding: 14px 30px;
+                font-size: 1em;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar-brand h1 {
+                font-size: 1.2em;
+            }
+
+            .navbar-brand .logo-icon {
+                font-size: 1.4em;
+            }
+
+            .nav-item {
+                font-size: 0.7em;
+                padding: 4px 10px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 25px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .feature-card {
+                padding: 15px 10px;
+            }
+
+            .feature-card .icon {
+                font-size: 1.8em;
+            }
+
+            .feature-card h3 {
+                font-size: 0.9em;
+            }
+
+            .feature-card p {
+                font-size: 0.75em;
+            }
+
+            .card h2 {
+                font-size: 1.5em;
+            }
+
+            .card .icon-main {
+                font-size: 3em;
+            }
+
+            .btn-access {
+                padding: 12px 20px;
+                font-size: 0.9em;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="mainNavbar">
+        <a href="#" class="navbar-brand">
+            <span class="logo-icon">✦</span>
+            <div>
+                <h1>YvoneClass <small>EDU</small></h1>
+            </div>
+        </a>
+
+        <!-- Menu - SÓ APARECE QUANDO LOGADO -->
+        <div class="nav-menu">
+            <a href="index.html" class="nav-item active">
+                <i class="fas fa-home"></i> <span>Início</span>
+            </a>
+            <a href="ocorrencias.html" class="nav-item">
+                <i class="fas fa-clipboard-list"></i> <span>Ocorrências</span>
+            </a>
+            <a href="presenca.html" class="nav-item">
+                <i class="fas fa-user-check"></i> <span>Presença</span>
+            </a>
+            <a href="mapeamento.html" class="nav-item">
+                <i class="fas fa-map-marked-alt"></i> <span>Mapeamento</span>
+            </a>
+            <a href="agenda.html" class="nav-item">
+                <i class="fas fa-calendar-alt"></i> <span>Agenda</span>
+            </a>
+        </div>
+
+        <div class="nav-user">
+            <!-- Quando NÃO está logado -->
+            <div class="hide-when-logged-in">
+                <button class="btn-login-nav" onclick="openLoginModal()">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </div>
+
+            <!-- Quando está logado -->
+            <div class="show-when-logged-in" style="display: none; align-items: center; gap: 12px;">
+                <div class="user-avatar-nav" id="navUserAvatar">P</div>
+                <span class="user-email-nav" id="navUserEmail">professor@email.com</span>
+                <button class="btn-logout-nav" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== CONTAINER PRINCIPAL ===== -->
+    <div class="container">
+        <div class="card">
+            <div class="icon-main">✦</div>
+            <h2>Bem-vindo ao YvoneClass</h2>
+            <p>
+                O <span class="highlight">YvoneClass</span> é o sistema escolar completo para 
+                professores. Gerencie <span class="highlight">ocorrências</span>, 
+                <span class="highlight">presenças</span>, <span class="highlight">mapeamento de sala</span> 
+                e <span class="highlight">agendamentos</span> de laboratório em um só lugar.
+            </p>
+
+            <!-- MENSAGEM PARA DESLOGADO -->
+            <div class="hide-when-logged-in">
+                <div class="mensagem-deslogado">
+                    <i class="fas fa-lock"></i>
+                    <strong>Área restrita a professores</strong><br>
+                    <span>Faça login com seu email institucional para acessar todas as funcionalidades.</span>
+                </div>
+                <button class="btn-entrar-grande" onclick="openLoginModal()">
+                    <i class="fas fa-sign-in-alt"></i> Entrar no Sistema
+                </button>
+            </div>
+
+            <!-- FUNCIONALIDADES - SÓ APARECE QUANDO LOGADO -->
+            <div class="show-when-logged-in" style="display: none;">
+                <!-- Grid com 4 cards em linha CENTRALIZADOS -->
+                <div class="features-grid">
+                    <a href="ocorrencias.html" class="feature-card">
+                        <div class="icon">📋</div>
+                        <h3>Ocorrências</h3>
+                        <p>Registre ocorrências positivas e negativas</p>
+                    </a>
+                    <a href="presenca.html" class="feature-card">
+                        <div class="icon">✅</div>
+                        <h3>Presença</h3>
+                        <p>Marque presenças e faltas dos alunos</p>
+                    </a>
+                    <a href="mapeamento.html" class="feature-card">
+                        <div class="icon">🗺️</div>
+                        <h3>Mapeamento</h3>
+                        <p>Organize os lugares dos alunos na sala</p>
+                    </a>
+                    <a href="agenda.html" class="feature-card">
+                        <div class="icon">📅</div>
+                        <h3>Agenda</h3>
+                        <p>Agende uso dos laboratórios</p>
+                    </a>
+                </div>
+
+                <!-- Botão ACESSAR SISTEMA - LONGO E FINO, ABAIXO DOS CARDS -->
+                <div class="btn-access-container">
+                    <button class="btn-access" onclick="acessarSistema()">
+                        <i class="fas fa-arrow-right"></i> ACESSAR SISTEMA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL DE LOGIN ===== -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModalBtn">&times;</button>
+            
+            <!-- Formulário de Login -->
+            <div id="loginForm">
+                <h2>🔐 Login do Professor</h2>
+                <form id="loginSubmit">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Institucional</label>
+                        <input type="email" id="loginEmail" placeholder="professor@escola.edu.br" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Senha</label>
+                        <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Entrar</button>
+                    <div id="loginMessage" class="status-message"></div>
+                </form>
+                <div class="form-footer">
+                    Não tem conta? <a id="showRegister">Cadastre-se como professor</a>
+                </div>
+            </div>
+
+            <!-- Formulário de Registro -->
+            <div id="registerForm" style="display: none;">
+                <h2>📝 Cadastro de Professor</h2>
+                <form id="registerSubmit">
+                    <div class="form-group">
+                        <label for="registerName">Nome Completo</label>
+                        <input type="text" id="registerName" placeholder="Seu nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email Institucional</label>
+                        <input type="email" id="registerEmail" placeholder="professor@escola.edu.br" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Senha</label>
+                        <input type="password" id="registerPassword" placeholder="Crie uma senha (mínimo 6 caracteres)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerConfirmPassword">Confirmar Senha</label>
+                        <input type="password" id="registerConfirmPassword" placeholder="Confirme sua senha" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Criar Conta</button>
+                    <div id="registerMessage" class="status-message"></div>
+                </form>
+                <div class="form-footer">
+                    Já tem conta? <a id="showLogin">Faça login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // FUNÇÃO ACESSAR SISTEMA
+        // ==========================================
+        function acessarSistema() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                // Se NÃO estiver logado, abre o modal de login
+                openLoginModal();
+                return;
+            }
+            
+            // Se ESTIVER logado, redireciona para uma página aleatória
+            const paginas = [
+                'ocorrencias.html',
+                'presenca.html', 
+                'mapeamento.html',
+                'agenda.html'
+            ];
+            
+            const paginaAleatoria = paginas[Math.floor(Math.random() * paginas.length)];
+            window.location.href = paginaAleatoria;
+        }
+
+        // ==========================================
+        // SISTEMA DE LOGIN COM EMAIL
+        // ==========================================
+        
+        // Elementos
+        const loginModal = document.getElementById('loginModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const showRegister = document.getElementById('showRegister');
+        const showLogin = document.getElementById('showLogin');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const registerSubmit = document.getElementById('registerSubmit');
+        const loginMessage = document.getElementById('loginMessage');
+        const registerMessage = document.getElementById('registerMessage');
+        const navUserAvatar = document.getElementById('navUserAvatar');
+        const navUserEmail = document.getElementById('navUserEmail');
+
+        function openLoginModal() {
+            loginModal.style.display = 'block';
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            loginMessage.style.display = 'none';
+            registerMessage.style.display = 'none';
+        }
+
+        // Fechar modal
+        closeModalBtn.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+        });
+
+        // Alternar entre login e registro
+        showRegister.addEventListener('click', () => {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            loginMessage.style.display = 'none';
+            registerMessage.style.display = 'none';
+        });
+
+        showLogin.addEventListener('click', () => {
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'block';
+            loginMessage.style.display = 'none';
+            registerMessage.style.display = 'none';
+        });
+
+        // Mostrar mensagem
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.style.display = 'block';
+            element.className = `status-message ${type}`;
+        }
+
+        // ===== REGISTRO (com email) =====
+        registerSubmit.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showMessage(registerMessage, "As senhas não coincidem!", 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage(registerMessage, "A senha deve ter pelo menos 6 caracteres!", 'error');
+                return;
+            }
+
+            // Validar email institucional
+            if (!email.includes('@') || !email.includes('.edu')) {
+                showMessage(registerMessage, "Use um email institucional (@escola.edu.br)!", 'error');
+                return;
+            }
+
+            const professores = JSON.parse(localStorage.getItem('professores_yvone') || '[]');
+            
+            if (professores.some(p => p.email === email)) {
+                showMessage(registerMessage, "Este email já está cadastrado!", 'error');
+                return;
+            }
+            
+            professores.push({ name, email, password });
+            localStorage.setItem('professores_yvone', JSON.stringify(professores));
+            
+            showMessage(registerMessage, "✅ Cadastro realizado com sucesso!", 'success');
+            this.reset();
+            
+            setTimeout(() => {
+                registerForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                registerMessage.style.display = 'none';
+                showMessage(loginMessage, "Conta criada! Faça login com seu email.", 'success');
+            }, 1500);
+        });
+
+        // ===== LOGIN (com email) =====
+        loginSubmit.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            const professores = JSON.parse(localStorage.getItem('professores_yvone') || '[]');
+            const user = professores.find(p => p.email === email && p.password === password);
+            
+            if (user) {
+                showMessage(loginMessage, "✅ Login bem-sucedido!", 'success');
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                setTimeout(() => {
+                    loginModal.style.display = 'none';
+                    updateUI();
+                    loginSubmit.reset();
+                    loginMessage.style.display = 'none';
+                }, 1000);
+            } else {
+                showMessage(loginMessage, "❌ Email ou senha incorretos!", 'error');
+            }
+        });
+
+        // ===== LOGOUT =====
+        function logout() {
+            localStorage.setItem('isLoggedIn', 'false');
+            localStorage.removeItem('currentUser');
+            updateUI();
+            // Redirecionar para a página inicial
+            window.location.href = 'index.html';
+        }
+
+        // ===== ATUALIZAR INTERFACE =====
+        function updateUI() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userData = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            
+            if (isLoggedIn && userData) {
+                document.body.classList.add('logged-in');
+                const initial = userData.name ? userData.name.charAt(0).toUpperCase() : 'P';
+                navUserAvatar.textContent = initial;
+                navUserEmail.textContent = userData.email || 'professor@email.com';
+            } else {
+                document.body.classList.remove('logged-in');
+                navUserAvatar.textContent = 'P';
+                navUserEmail.textContent = 'professor@email.com';
+            }
+        }
+
+        // ==========================================
+        // VERIFICAR LOGIN AO CARREGAR PÁGINA
+        // ==========================================
+        updateUI();
+
+        console.log('✅ YvoneClass - Sistema Escolar para Professores');
+        console.log('📌 Botão "Acessar Sistema" - Login ou redirecionamento aleatório');
+        console.log('👨‍🏫 Login com email institucional');
+        console.log('💾 Dados salvos no localStorage');
+    </script>
+</body>
+</html>
